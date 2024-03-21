@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4eab638f66315a409c2c588a75fb202, type: 3}
+  m_Name: DesignSettings
+  m_EditorClassIdentifier: 
+  headerColor: {r: 0, g: 0.53333336, b: 0.9607844, a: 1}
+  backgroundColor: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 1}
+  accentColor: {r: 0, g: 0.534123, b: 0.9622642, a: 1}

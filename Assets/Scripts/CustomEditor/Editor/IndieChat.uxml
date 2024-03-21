@@ -1,0 +1,27 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/CustomEditor/Editor/IndieChat.uss?fileID=7433441132597879392&amp;guid=0f9a90f3a61612f41a87b424d163f4e3&amp;type=3#IndieChat" />
+    <ui:VisualElement name="VisualElement" style="flex-grow: 1; height: 152px; background-image: url(&apos;project://database/Assets/Doozy/_Extras/Sprites/Wallpapers/DarkStack_8.png?fileID=2800000&amp;guid=f2358c1bf3f194f4f817a4812431bb66&amp;type=3#DarkStack_8&apos;); -unity-background-scale-mode: scale-and-crop;">
+        <ui:VisualElement style="flex-grow: 1; margin-top: 80px; margin-right: 80px; margin-bottom: 80px; margin-left: 80px;">
+            <ui:VisualElement style="flex-grow: 1; width: 25%; height: 25px; justify-content: center; align-self: center; background-image: url(&apos;project://database/Assets/Doozy/_Extras/Sprites/Icons/acorn_solid.png?fileID=2800000&amp;guid=5834b4f42390ba449aad59e0c380fb5b&amp;type=3#acorn_solid&apos;); min-width: 200px; min-height: 200px; max-height: 200px; max-width: 200px; flex-basis: 0;" />
+            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" style="background-color: rgba(255, 255, 255, 0); -unity-text-align: upper-center; color: rgb(224, 0, 0); font-size: 18px;" />
+            <ui:VisualElement style="flex-grow: 1; height: auto; justify-content: center; align-self: center; width: 100%; max-height: 100px; min-height: 100px; max-width: 100%; min-width: 75px;">
+                <ui:Label tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" style="color: rgb(255, 255, 255); justify-content: center; align-items: center; left: 3px; width: 501px;" />
+                <ui:TextField picking-mode="Ignore" value="filler text" style="margin-top: 0; margin-right: 25px; margin-bottom: 25px; margin-left: 25px; width: 100%; justify-content: center; align-self: center;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-grow: 1; height: auto; justify-content: center; align-self: center; width: 100%; max-height: 100px; min-height: 100px; max-width: 100%; min-width: 50%;">
+                <ui:Label tabindex="-1" text="Email" parse-escape-sequences="true" display-tooltip-when-elided="true" style="color: rgb(255, 255, 255); justify-content: center; align-items: center; left: 3px; width: 419px; font-size: 18px;" />
+                <ui:TextField picking-mode="Ignore" value="filler text" style="margin-top: 0; margin-right: 25px; margin-bottom: 25px; margin-left: 25px; width: 100%; justify-content: center; align-self: center;" />
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-grow: 1; height: auto; justify-content: center; align-self: center; width: 100%; max-height: 100px; min-height: 100px; max-width: 100%; min-width: 50%;">
+                <ui:Label tabindex="-1" text="Password" parse-escape-sequences="true" display-tooltip-when-elided="true" style="color: rgb(255, 255, 255); justify-content: center; align-items: center; left: 3px; width: 421px; font-size: 18px;" />
+                <ui:TextField picking-mode="Ignore" value="filler text" style="margin-top: 0; margin-right: 25px; margin-bottom: 25px; margin-left: 25px; width: 100%; justify-content: center; align-self: center;" />
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-grow: 1; height: auto; justify-content: center; align-self: center; width: 100%; max-height: 100px; min-height: 100px; max-width: 100%; min-width: 50%;">
+                <ui:Label tabindex="-1" text="Confirm Password" parse-escape-sequences="true" display-tooltip-when-elided="true" style="color: rgb(255, 255, 255); justify-content: center; align-items: center; left: 3px; width: 420px; font-size: 18px;" />
+                <ui:TextField picking-mode="Ignore" value="filler text" style="margin-top: 0; margin-right: 25px; margin-bottom: 25px; margin-left: 25px; width: 100%; justify-content: center; align-self: center;" />
+            </ui:VisualElement>
+            <ui:Button text="Sign Up" parse-escape-sequences="true" display-tooltip-when-elided="true" style="width: 30%; align-self: center; justify-content: center; align-items: center; margin-top: 15px; margin-right: 15px; margin-bottom: 15px; margin-left: 15px; background-image: none; background-color: rgb(226, 226, 226);" />
+            <ui:Button text="Sign In" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button" style="width: 25%; align-self: center; justify-content: center; align-items: center; margin-top: 15px; margin-right: 15px; margin-bottom: 15px; margin-left: 15px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
