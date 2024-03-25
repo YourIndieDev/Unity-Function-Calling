@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b863ad42058a6ab43a472d6f03ab1723, type: 3}
   m_Name: AiBrain
   m_EditorClassIdentifier: 
-  debug: 1
+  showThoughts: 0
+  showActions: 1
   systemMessage: 'Your task is to generate an engaging and detailed story based on
     the brief provided. The story can belong to any genre - be it a tall tale, science
     fiction, adventure, anime, factual, superhero or fantasy. It could even be a
@@ -142,4 +143,18 @@ MonoBehaviour:
         in all its forms, setting the stage for a new era in Neo-Eden, where magic
         and technology, humanity and artificial intelligence, entwine in the dance
         of life."
-  context: "How would you feel if i gave you a kiss\n "
+    - role: user
+      content: "How would you feel if i gave you a kiss and then i want you to\n
+        Show the sphere"
+    - role: user
+      content: "How would you feel if i gave you a kiss and then i want you to\n
+        Show the sphere"
+    - role: user
+      content: "How would you feel if i gave you a kiss and then i want you to\n
+        Show the sphere"
+    - role: assistant
+      content: '{"emotion": "Surprised"}'
+    - role: assistant
+      content: '{"name": "sphere"}'
+  context: "How would you feel if i gave you a kiss and then i want you to\n Show
+    the sphere"

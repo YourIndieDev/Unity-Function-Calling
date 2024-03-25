@@ -42,8 +42,11 @@ namespace Indie.OpenAI.API
 
         public static async void CallTest()
         {
-            var chatmessage = new ChatMessage { role ="user", content = "Create a random image prompt" };
-            //var chatHistory = new ChatHistory { messages = new List<ChatMessage> { chatmessage } };
+            //var chatHistory = new ChatHistory();
+            //chatHistory.messages.Add( new ChatMessage { role ="user", content = "Remember the number 333" });
+            //chatHistory.messages.Add( new ChatMessage { role ="assistant", content = "Okay" });
+            //chatHistory.messages.Add( new ChatMessage { role ="user", content = "What is the number i asked you to rememeber?" });
+
 
 
             //var visionmessage = new VisionMessage { url = "", input = "Explain this" };
@@ -326,7 +329,7 @@ namespace Indie.OpenAI.API
 
             try
             {
-                var chatMessageAsyncResponse = await CallEndpointPostAsync<ChatCompletion.Response>(chatMessageAsyncUrl, chatmessage);
+                //var chatMessageAsyncResponse = await CallEndpointPostAsync<ChatCompletion.Response>(chatMessageAsyncUrl, chatmessage);
                 //var chatHistoryAsyncResponse = await CallEndpointPostAsync<ChatCompletion.Response>(chatHistoryAsyncUrl, chatHistory);
                 //var imageAsyncResponse = await CallEndpointPostAsync<Image.Response>(imageAsyncsUrl, imagePrompt);
                 //var visionUrlResponse = await CallEndpointPostAsync<ChatCompletion.Response>(visionUrl, visionmessage.url = imageAsyncResponse.Data[0].Url);
@@ -337,7 +340,7 @@ namespace Indie.OpenAI.API
                 //var assistantResponse = await CallEndpointPostAsync<List<Assistant.Response>>(assistantUrl, assistantmessage);
                 //var functionResponse = await CallEndpointPostAsync<ChatCompletion.Response>(functionsUrl, functionMessage);
 
-                Debug.Log(chatMessageAsyncResponse.Choices[0].Message.Content);
+                //Debug.Log(chatMessageAsyncResponse.Choices[0].Message.Content);
                 //Debug.Log(chatHistoryAsyncResponse.Choices[0].Message.Content);
                 //Debug.Log(imageAsyncResponse.Data[0].Url);
                 //Debug.Log(visionUrlResponse.Choices[0].Message.Content);

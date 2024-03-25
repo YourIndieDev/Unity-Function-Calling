@@ -2032,7 +2032,7 @@ GameObject:
   - component: {fileID: 1423525878}
   - component: {fileID: 1423525877}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: Text Response
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

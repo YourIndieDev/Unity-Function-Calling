@@ -11,6 +11,7 @@ using static Indie.OpenAI.Tools.ToolCreator;
 using Indie.OpenAI.API;
 using Indie.Attributes;
 using System.ComponentModel;
+using UnityEditor.Search;
 
 
 namespace Indie.OpenAI.Brain
@@ -18,15 +19,19 @@ namespace Indie.OpenAI.Brain
     [CreateAssetMenu(fileName = "Brain", menuName = "Indie/Brain", order = 1)]
     public class Brain : ScriptableObject
     {
-        [SerializeField] private bool debug = false;
+        [SerializeField] private bool showThoughts = false;
+        [SerializeField] private bool showActions = false;
 
+        [Space(20)]
         [SerializeField, TextArea(3, 50)]
         private string systemMessage = "";
 
         // The history of the conversation with the AI
+        [Space(20)]
         [SerializeField] private ChatHistory history = new ChatHistory();
 
         // Output
+        [Space(20)]
         [SerializeField, TextArea(3, 50)]
         public string context;
 
@@ -213,8 +218,6 @@ namespace Indie.OpenAI.Brain
             // update the system message
             AddSystemMessage(systemMessage);
 
-            Debug.Log(JsonConvert.SerializeObject(history.messages, Formatting.Indented));
-
             if (toolset.Count == 0)
                 return new ChatHistory { messages = history.messages };
             else
@@ -361,7 +364,7 @@ namespace Indie.OpenAI.Brain
             string prefix = isError ? "<color=red>Contemplation</color>" : (isAction ? "<color=orange>Action</color>" : "<color=yellow>Thought</color>");
             string formattedLog = $"{prefix} : {thought}";
 
-            if (debug)
+            if (showThoughts)
             {
                 if (isError)
                 {
@@ -371,6 +374,10 @@ namespace Indie.OpenAI.Brain
                 {
                     Debug.Log(formattedLog);
                 }
+            }
+            else if (showActions && isAction)
+            {
+                Debug.Log(formattedLog);
             }
         }
     }
