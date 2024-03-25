@@ -8,14 +8,14 @@ namespace Indie.OpenAI.Models.Requests
     [Serializable]
     public class ChatMessage
     {
-        public string role { get; set; }
-        public string content { get; set; }
+        public string role;
+        public string content;
     }
 
     [Serializable]
     public class ChatHistory
     {
-        public List<ChatMessage> messages { get; set; } = new List<ChatMessage>();
+        public List<ChatMessage> messages = new List<ChatMessage>();
     }
 
 

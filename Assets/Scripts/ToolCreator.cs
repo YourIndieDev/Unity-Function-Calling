@@ -53,7 +53,7 @@ namespace Indie.OpenAI.Tools
             public List<string>? Enum { get; set; } = new List<string>();
         }
 
-        public static Tool CreateTool(string name, string description, Dictionary<string, ParameterDefinition> parameters, List<string> requiredParameters)
+        public static Tool CreateTool(string name, string description, Dictionary<string, ParameterDefinition> parameters = null, List<string> requiredParameters = null)
         {
             var tool = new Tool
             {

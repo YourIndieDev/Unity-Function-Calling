@@ -20,8 +20,16 @@ namespace Indie.OpenAI.Brain
     {
         [SerializeField] private bool debug = false;
 
+        [SerializeField, TextArea(3, 50)]
+        private string systemMessage = "";
+
         // The history of the conversation with the AI
-        private ChatHistory history = new ChatHistory();
+        [SerializeField] private ChatHistory history = new ChatHistory();
+
+        // Output
+        [SerializeField, TextArea(3, 50)]
+        public string context;
+
 
         // list of tools from the scripts
         private List<Tool> toolset = new List<Tool>();
@@ -37,7 +45,7 @@ namespace Indie.OpenAI.Brain
 
             var tools = AnalyzeScript(script);
 
-            foreach (var tool in tools)
+            foreach (var tool in tools.Result)
                 AddTool(tool.Function.Name, tool.Function.Description, tool.Function.Parameters.Properties, tool.Function.Parameters.Required);
         }
 
@@ -45,44 +53,61 @@ namespace Indie.OpenAI.Brain
         {
             var tools = AnalyzeScript(script);
 
-            foreach (var tool in tools)
+            foreach (var tool in tools.Result)
                 RemoveTool(tool.Function.Name);
 
             if (scripts.ContainsKey(script)) scripts.Remove(script);
         }
 
-        private List<Tool> AnalyzeScript(Type script)
+        private async Task<List<Tool>> AnalyzeScript(Type script)
         {
             Thought($"Analyzing Scripts For Tools");
 
             List<Tool> tools = new List<Tool>();
 
 
-                MethodInfo[] methods = script.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-                foreach (var method in methods)
+            MethodInfo[] methods = script.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+            foreach (var method in methods)
+            {
+                // Checks the rcript for the ToolAttribute
+                var toolAttribute = method.GetCustomAttribute<ToolAttribute>();
+                if (toolAttribute != null)
                 {
-                    var toolAttribute = method.GetCustomAttribute<ToolAttribute>();
-                    if (toolAttribute != null)
-                    {
-                        List<ParameterInfo> parameters = method.GetParameters().ToList();
+                    // Get the parameters of the method
+                    List<ParameterInfo> parameters = method.GetParameters().ToList();
 
-                        var parameterDictionary = parameters.ToDictionary(p => p.Name, p => new ParameterDefinition 
-                        { 
-                            Type = p.ParameterType.Name.ToLower(), 
-                            Description = p.Name.ToLower()
+                    var parameterDictionary = new Dictionary<string, ParameterDefinition>();
+                    List<string> requiredParameters = new List<string>();
+                    if (parameters.Count > 0)
+                    {
+                        //string content = $"Fuction Name: {toolAttribute.FunctionName}, Function Description: {toolAttribute.Description}  Parameter name: {parameters[0].Name}, Type: {parameters[0].ParameterType}";
+
+                        //var chatmessage = new ChatMessage { role = "user", content = "Create a short one sentence description of this parameter: " + content };
+                        // This call freezes the unity editor //var response = await CallChatEndpoint($"Create a short one sentence description of this parameter: {content}");
+
+                        //Thought($"Response of the parameter discription: {response}");
+
+
+                        parameterDictionary = parameters.ToDictionary(p => p.Name, p => new ParameterDefinition
+                        {
+                            Type = p.ParameterType.Name.ToLower(),
+                            Description = p.ParameterType.Name.ToLower() // response.Choices[0].Message.Content
                         });
 
-                        List<string> requiredParamters = new List<string>();
+                        // Create the list of required parameters from the parameter info
                         foreach (var parameter in parameters)
                         {
                             if (!parameter.HasDefaultValue || Nullable.GetUnderlyingType(parameter.ParameterType) == null)
-                                requiredParamters.Add(parameter.Name);
+                                requiredParameters.Add(parameter.Name);
                         }
-
-                        var newTool = CreateTool(toolAttribute.FunctionName, toolAttribute.Description, parameterDictionary, requiredParamters);
-                        tools.Add(newTool);
                     }
+
+                    var newTool = CreateTool(toolAttribute.FunctionName, toolAttribute.Description, parameterDictionary, requiredParameters);
+                    tools.Add(newTool);
+
+                    Thought($"Tool analyzed and added: {JsonConvert.SerializeObject(newTool)}");
                 }
+            }
 
             return tools;
         }
@@ -133,9 +158,11 @@ namespace Indie.OpenAI.Brain
 
 
         // History
-        private void AddHumanMessage(string input)
+        private ChatMessage AddHumanMessage(string input)
         {
-            history.messages.Add(new ChatMessage { role = "user", content = input });
+            var chatmessage = new ChatMessage { role = "user", content = input };
+            history.messages.Add(chatmessage);
+            return chatmessage;
         }
 
         private void AddAiMessage(string input)
@@ -145,7 +172,12 @@ namespace Indie.OpenAI.Brain
 
         private void AddSystemMessage(string input)
         {
-            history.messages.Add(new ChatMessage { role = "system", content = input });
+            // Check if a system message already exists
+            ChatMessage systemMessage = history.messages.Find(message => message.role == "system");
+
+            // Update the existing system message's content or add it if it doesn't exist
+            if (systemMessage != null) systemMessage.content = input;
+            else history.messages.Add(new ChatMessage { role = "system", content = input });
         }
 
         public void ClearHistory()
@@ -165,10 +197,24 @@ namespace Indie.OpenAI.Brain
         }
 
 
+        public async Task<string> CallChatEndpoint(string input)
+        {
+            var chatmessage = AddHumanMessage(input);
+
+            var chatAsyncResponse = await FastAPICommunicator.CallEndpointPostAsync<ChatCompletion.Response>(FastAPICommunicator.chatAsyncUrl, chatmessage);
+
+            return chatAsyncResponse.Choices[0].Message.Content;
+        }
+
 
         // Create the function message
         private ChatHistory CreateFunctionMessage()
         {
+            // update the system message
+            AddSystemMessage(systemMessage);
+
+            Debug.Log(JsonConvert.SerializeObject(history.messages, Formatting.Indented));
+
             if (toolset.Count == 0)
                 return new ChatHistory { messages = history.messages };
             else
@@ -176,12 +222,15 @@ namespace Indie.OpenAI.Brain
         }
 
         // Call the function endpoing with an input
-        public async void CallFunctionEndpoint(string input)
+        public async Task<string> CallFunctionEndpoint(string input)
         {
             AddHumanMessage(input);
             var response = await CallAndParseResponse();
 
-            if (response != null) Thought(response);
+            if (response != null)
+                return response;
+            else
+                return "";
         }
 
         // Call the function and parse the response
@@ -200,7 +249,7 @@ namespace Indie.OpenAI.Brain
                 // Parse function call responses
                 foreach (var choice in functionResponse.Choices)
                 {
-                    if (choice.Message.Content != null) Thought(choice.Message.Content);                    
+                    if (choice.Message.Content != null) Thought(choice.Message.Content);
 
                     //if (choice.Message.FunctionCall != null) { }
 
@@ -208,7 +257,7 @@ namespace Indie.OpenAI.Brain
                     {
                         foreach (var toolCall in choice.Message.ToolCalls)
                         {
-                            Thought($"I should call {toolCall.Function.Name}, with {toolCall.Function.Arguments}.");
+                            Thought($"I should call {toolCall.Function.Name}, with {toolCall.Function.Arguments}.", isAction: true);
 
                             if (toolCall.Function.Arguments != null) AddAiMessage(toolCall.Function.Arguments);
 
@@ -292,10 +341,10 @@ namespace Indie.OpenAI.Brain
                                         break;
                                     }
                                 }
-                            }
-                            return choice.Message.Content;
+                            }                         
                         }
                     }
+                    return choice.Message.Content;
                 }
                 return default;
             }
@@ -307,10 +356,11 @@ namespace Indie.OpenAI.Brain
         }
 
         // Logging
-        private void Thought(string thought, bool isError = false)
+        private void Thought(string thought, bool isError = false, bool isAction = false)
         {
-            string prefix = isError ? "<color=red>Contemplation</color>" : "<color=yellow>Thought</color>";
+            string prefix = isError ? "<color=red>Contemplation</color>" : (isAction ? "<color=orange>Action</color>" : "<color=yellow>Thought</color>");
             string formattedLog = $"{prefix} : {thought}";
+
             if (debug)
             {
                 if (isError)

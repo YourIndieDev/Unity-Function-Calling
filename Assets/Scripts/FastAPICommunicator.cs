@@ -1,7 +1,8 @@
-using Newtonsoft.Json;
 using Indie.OpenAI.Models.Requests;
 using Indie.OpenAI.Models.Responses;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -22,23 +23,32 @@ namespace Indie.OpenAI.API
 }
     public static class FastAPICommunicator
     {
+        // Chat URLS
         public static string chatAsyncUrl = "http://localhost:8000/chat_async/";
+        public static string chatHistoryAsyncUrl = "http://localhost:8000/chat_history_async/";
+        public static string chatMessageAsyncUrl = "http://localhost:8000/chat_message_async/";
+
+
+
         public static string visionUrl = "http://localhost:8000/vision_async_url/";
         public static string visionBytesUrl = "http://localhost:8000/vision_async_bytes/";
         public static string imageAsyncsUrl = "http://localhost:8000/image_async/";
         public static string speechToTextTimeStampUrl = "http://localhost:8000/speech_to_text_timestamp_async/";
-        public static string speeachToTextUrl = "http://localhost:8000/speech_to_text_async/";
+        public static string speechToTextUrl = "http://localhost:8000/speech_to_text_async/";
         public static string moderationsAsyncUrl = "http://localhost:8000/moderations_async/";
         public static string assistantUrl = "http://localhost:8000/assistant/";
         public static string functionsUrl = "http://localhost:8000/chat_functions/";
 
 
-        static async void Start()
+        public static async void CallTest()
         {
-            //var chatmessage = new ChatMessage { input = "Create a random image prompt" };
+            var chatmessage = new ChatMessage { role ="user", content = "Create a random image prompt" };
+            //var chatHistory = new ChatHistory { messages = new List<ChatMessage> { chatmessage } };
+
+
             //var visionmessage = new VisionMessage { url = "", input = "Explain this" };
             //var visionbytesmessage = new VisionBytesMessage { image_path = "", input = "Explain this" };
-            var speechtotextmessage = new SpeechToTextMessage { audio_path = @"C:\\Users\RecallableFacts\Desktop\ElevenLabs_2024-02-26T07_20_33_NarratorDano_ivc_s76_sb75_se50_b_m2.mp3" };
+            //var speechtotextmessage = new SpeechToTextMessage { audio_path = @"C:\\Users\RecallableFacts\Desktop\ElevenLabs_2024-02-26T07_20_33_NarratorDano_ivc_s76_sb75_se50_b_m2.mp3" };
             //var assistantmessage = new AssistantMessage { input = "Create a story of An astronaut exploring a lush, alien jungle filled with towering, glowing mushrooms and mysterious, bioluminescent creatures.", assistant_id = "asst_ZE2w0PwhCO6XWJk7rZB1xAcD"};
             //var imagePrompt = new ChatMessage{ input = "An astronaut exploring a lush, alien jungle filled with towering, glowing mushrooms and mysterious, bioluminescent creatures." };
 
@@ -316,23 +326,25 @@ namespace Indie.OpenAI.API
 
             try
             {
-                //var chatAsyncResponse = await CallEndpointPostAsync<ChatCompletion.Response>(chatAsyncUrl, chatmessage);
+                var chatMessageAsyncResponse = await CallEndpointPostAsync<ChatCompletion.Response>(chatMessageAsyncUrl, chatmessage);
+                //var chatHistoryAsyncResponse = await CallEndpointPostAsync<ChatCompletion.Response>(chatHistoryAsyncUrl, chatHistory);
                 //var imageAsyncResponse = await CallEndpointPostAsync<Image.Response>(imageAsyncsUrl, imagePrompt);
                 //var visionUrlResponse = await CallEndpointPostAsync<ChatCompletion.Response>(visionUrl, visionmessage.url = imageAsyncResponse.Data[0].Url);
                 //var visionBytesResponse = await CallEndpointPostAsync<ChatCompletion.Response>(visionBytesUrl, visionbytesmessage);
                 //var speechToTextAsyncTimeStampResponse = await CallEndpointPostAsync<SpeechToText.TimeStampResponse>(speechToTextTimeStampUrl, speechtotextmessage);
-                var speechToTextAsyncResponse = await CallEndpointPostAsync<SpeechToText.Response>(speeachToTextUrl, speechtotextmessage);
+                //var speechToTextAsyncResponse = await CallEndpointPostAsync<SpeechToText.Response>(speechToTextUrl, speechtotextmessage);
                 //var moderationsAsyncResponse = await CallEndpointPostAsync<Moderation.Response>(moderationsAsyncUrl, chatmessage);
                 //var assistantResponse = await CallEndpointPostAsync<List<Assistant.Response>>(assistantUrl, assistantmessage);
                 //var functionResponse = await CallEndpointPostAsync<ChatCompletion.Response>(functionsUrl, functionMessage);
 
-                //Debug.Log(chatAsyncResponse.Choices[0].Message.Content);
+                Debug.Log(chatMessageAsyncResponse.Choices[0].Message.Content);
+                //Debug.Log(chatHistoryAsyncResponse.Choices[0].Message.Content);
                 //Debug.Log(imageAsyncResponse.Data[0].Url);
                 //Debug.Log(visionUrlResponse.Choices[0].Message.Content);
 
                 //Debug.Log(visionBytesResponse.Choices[0].Message.Content);
                 //Debug.Log(speechToTextAsyncTimeStampResponse.Words);
-                Debug.Log(speechToTextAsyncResponse.Text);
+                //Debug.Log(speechToTextAsyncResponse.Text);
                 //Debug.Log(moderationsAsyncResponse.Results[0].Flagged);
 
                 //Debug.Log(assistantResponse[0].Content[0].Text.Value);

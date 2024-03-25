@@ -29,7 +29,7 @@ namespace OpenAiI
 
 
         // Function to call
-        [Tool("DoEmote", "Allow a character to show emotions")]
+        [Tool("DoEmote", "Allow a character to show emotions. It has 1 parameter of string type that is for telling the function what emotion to feel out of Happy, Sad, Anger, Suprised, Anxiety, Disgust, Fear, Gratitude, and Love")]
         public void DoEmote(string emotion)
         {
             foreach (var obj in emoji)
@@ -46,12 +46,6 @@ namespace OpenAiI
         public void GiveAnswer(bool isAsked, string answer)
         {
             Debug.Log($"isAsked: {isAsked} + Answer {answer}");
-        }
-
-
-        public void Think()
-        {
-            aiBrain.CallFunctionEndpoint(inputField.text);
         }
     }
 }
