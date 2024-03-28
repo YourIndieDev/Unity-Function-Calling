@@ -51,6 +51,13 @@ namespace Indie.OpenAI.Models.Requests
         public string audio_path { get; set; }
     }
 
+    // Text to Speech
+    public class TextToSpeechMessage
+    {
+        public string content { get; set; }
+        public string voice { get; set; } = "alloy";
+    }
+
     // Assistant
     public class AssistantMessage
     {

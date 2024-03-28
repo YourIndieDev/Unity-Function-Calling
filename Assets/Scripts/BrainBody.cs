@@ -1,16 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Indie.OpenAI.Brain;
 using Indie.Attributes;
 using Indie.Voice;
-using UnityEngine.UI;
 using TMPro;
 using Indie.OpenAI.API;
 using System.Threading.Tasks;
-using static UnityEngine.Rendering.DebugUI;
-using Unity.VisualScripting;
-using Doozy.Runtime.Common.Extensions;
 
 
 namespace Indie
@@ -22,7 +16,9 @@ namespace Indie
 
         // Input
         [SerializeField] private VoiceInput voiceInput;
-        [SerializeField] private TMP_InputField inputField;
+        [SerializeField] private VoiceOutput voiceOutput;
+        [SerializeField] private TMP_InputField textInputField;
+        [SerializeField] private TMP_Text textOutputField;
 
 
         private void OnEnable()
@@ -40,6 +36,8 @@ namespace Indie
         public void StartListening()
         {
             voiceInput?.StartRecording();
+
+            if (brain) brain.context = "";
         }
 
         public void StopListening()
@@ -49,30 +47,57 @@ namespace Indie
 
 
         // Get context from voice input
-        public async void UnderstandSpeech()
+        public async Task UnderstandSpeech()
         {
-            if (brain) brain.context += "\n Voice Input : " + await voiceInput?.SpeechToText();
+            if (brain) brain.context += "Voice Input : " + await voiceInput?.SpeechToText();
         }
 
         // Get context from text input
         public void Read(string input = null)
         {
-            if (brain && !inputField.text.IsNullOrEmpty())  brain.context += $"\n Text Input : {inputField.text}. {input}";
+            if (textInputField.text == null) return;
+            if (brain && textInputField.text != "")  brain.context += $"\n Text Input : {textInputField.text}. {input}";
         }
 
-        // text/voice response
-        public async void Respond()
+        // text response
+        public async Task<string> Respond(string content = null, MessageType messageType = MessageType.user)
         {
-            Debug.Log(await brain?.CallChatEndpoint(brain?.context));
+            if (content != null)
+                return await brain?.CallChatEndpoint(content, messageType);
+            else
+                return await brain?.CallChatEndpoint(brain?.context, messageType);
+        }
 
-            //return await brain?.CallChatResponse(context);
+        // voice response
+        public async Task VoiceResponse(string content = null)
+        {
+            if (content == null)
+                await voiceOutput?.TextToSpeech(await Respond());
+            else
+                await voiceOutput?.TextToSpeech(content);
+
+            voiceOutput?.PlayResponse();
         }
 
         // Do function call
-        public async void Act()
+        public async Task<string> Act()
         {
-            var response = await brain?.CallFunctionEndpoint(brain?.context);
+            return await brain?.CallFunctionEndpoint(brain?.context);
         }
+
+
+        public async void ActionChat()
+        {
+            if (!brain) return;
+
+            await UnderstandSpeech();
+            Read();
+            var actions = await Act();
+            var response = await Respond(actions, MessageType.assistant);
+            textOutputField.text = response;
+            await VoiceResponse(response);
+        }
+
 
         [Tool("ForgetConversation", "Clear your message history. Forget about the previous conversation.")]
         public void ForgetConversation() => brain?.ClearHistory();
@@ -85,25 +110,15 @@ namespace Indie
         private void Update()
         {
             // Check if the user has stopped recording
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.P))
             {
                 if (!voiceInput.isRecording)
                     StartListening();
                 else
                 {
                     StopListening();
-                    UnderstandSpeech();
+                    ActionChat();
                 }
-            }
-
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                Debug.Log(voiceInput.GetMicrophoneDevices());
-            }
-
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                FastAPICommunicator.CallTest();
             }
         }
     }

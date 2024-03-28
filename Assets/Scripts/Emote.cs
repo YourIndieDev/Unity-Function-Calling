@@ -40,12 +40,5 @@ namespace OpenAiI
                     obj.SetActive(false);
             }
         }
-
-
-        [Tool("GiveAnswer", "Give an answer only if asked for")]
-        public void GiveAnswer(bool isAsked, string answer)
-        {
-            Debug.Log($"isAsked: {isAsked} + Answer {answer}");
-        }
     }
 }

@@ -12,10 +12,18 @@ using Indie.OpenAI.API;
 using Indie.Attributes;
 using System.ComponentModel;
 using UnityEditor.Search;
+using static Indie.OpenAI.Models.Responses.ChatCompletion;
 
 
 namespace Indie.OpenAI.Brain
 {
+    public enum MessageType
+    {
+        system,
+        assistant,
+        user
+    }
+
     [CreateAssetMenu(fileName = "Brain", menuName = "Indie/Brain", order = 1)]
     public class Brain : ScriptableObject
     {
@@ -50,7 +58,7 @@ namespace Indie.OpenAI.Brain
 
             var tools = AnalyzeScript(script);
 
-            foreach (var tool in tools.Result)
+            foreach (var tool in tools)
                 AddTool(tool.Function.Name, tool.Function.Description, tool.Function.Parameters.Properties, tool.Function.Parameters.Required);
         }
 
@@ -58,13 +66,13 @@ namespace Indie.OpenAI.Brain
         {
             var tools = AnalyzeScript(script);
 
-            foreach (var tool in tools.Result)
+            foreach (var tool in tools)
                 RemoveTool(tool.Function.Name);
 
             if (scripts.ContainsKey(script)) scripts.Remove(script);
         }
 
-        private async Task<List<Tool>> AnalyzeScript(Type script)
+        private List<Tool> AnalyzeScript(Type script)
         {
             Thought($"Analyzing Scripts For Tools");
 
@@ -202,12 +210,24 @@ namespace Indie.OpenAI.Brain
         }
 
 
-        public async Task<string> CallChatEndpoint(string input)
+        public async Task<string> CallChatEndpoint(string input, MessageType messageType = MessageType.user)
         {
-            var chatmessage = AddHumanMessage(input);
+            switch (messageType)
+            {
+                case MessageType.system:
+                    AddSystemMessage(input);
+                    break;
+                case MessageType.assistant:
+                    AddAiMessage(input);
+                    break;
+                case MessageType.user:
+                    AddHumanMessage(input);
+                    break;
+            }
 
-            var chatAsyncResponse = await FastAPICommunicator.CallEndpointPostAsync<ChatCompletion.Response>(FastAPICommunicator.chatAsyncUrl, chatmessage);
+            var chatAsyncResponse = await FastAPICommunicator.CallEndpointPostAsync<ChatCompletion.Response>(FastAPICommunicator.chatHistoryAsyncUrl, history);
 
+            AddAiMessage(chatAsyncResponse.Choices[0].Message.Content);
             return chatAsyncResponse.Choices[0].Message.Content;
         }
 
@@ -256,13 +276,18 @@ namespace Indie.OpenAI.Brain
 
                     //if (choice.Message.FunctionCall != null) { }
 
+                    string actions = "";
                     if (choice.Message.ToolCalls != null)
                     {
                         foreach (var toolCall in choice.Message.ToolCalls)
                         {
                             Thought($"I should call {toolCall.Function.Name}, with {toolCall.Function.Arguments}.", isAction: true);
 
-                            if (toolCall.Function.Arguments != null) AddAiMessage(toolCall.Function.Arguments);
+                            if (toolCall.Function.Arguments != null)
+                            {
+                                actions += $"{toolCall.Function.Name}, {toolCall.Function.Arguments} \n";
+                                //AddAiMessage($"I am calling {toolCall.Function.Name}, with {toolCall.Function.Arguments}.");
+                            }
 
                             // Deserialize the arguments
                             var dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(toolCall.Function.Arguments);
@@ -347,7 +372,7 @@ namespace Indie.OpenAI.Brain
                             }                         
                         }
                     }
-                    return choice.Message.Content;
+                    return $"{actions}"; // choice.Message.Content;
                 }
                 return default;
             }

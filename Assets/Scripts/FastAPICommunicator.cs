@@ -33,8 +33,11 @@ namespace Indie.OpenAI.API
         public static string visionUrl = "http://localhost:8000/vision_async_url/";
         public static string visionBytesUrl = "http://localhost:8000/vision_async_bytes/";
         public static string imageAsyncsUrl = "http://localhost:8000/image_async/";
+
         public static string speechToTextTimeStampUrl = "http://localhost:8000/speech_to_text_timestamp_async/";
         public static string speechToTextUrl = "http://localhost:8000/speech_to_text_async/";
+        public static string textToSpeechUrl = "http://localhost:8000/text_to_speech_async/";
+
         public static string moderationsAsyncUrl = "http://localhost:8000/moderations_async/";
         public static string assistantUrl = "http://localhost:8000/assistant/";
         public static string functionsUrl = "http://localhost:8000/chat_functions/";
@@ -415,7 +418,7 @@ namespace Indie.OpenAI.API
         }
 
         // Post
-        public static async Task<T> CallEndpointPostAsync<T>(string url, object data)
+        public static async Task<T> CallEndpointPostAsync<T>(string url, object data, string header = "application/json")
         {
             try
             {
@@ -426,7 +429,7 @@ namespace Indie.OpenAI.API
                 {
                     request.uploadHandler = new UploadHandlerRaw(bodyRaw);
                     request.downloadHandler = new DownloadHandlerBuffer();
-                    request.SetRequestHeader("Content-Type", "application/json");
+                    request.SetRequestHeader("Content-Type", header);
 
                     var operation = request.SendWebRequest();
 
@@ -452,6 +455,45 @@ namespace Indie.OpenAI.API
             {
                 Debug.LogError($"Exception: {ex.Message}");
                 return default(T);
+            }
+        }
+
+        public static async Task<byte[]> CallEndpointPostAsyncForBytes(string url, object data, string header = "application/json")
+        {
+            try
+            {
+                string jsonData = JsonConvert.SerializeObject(data);
+                byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+
+                using (var request = new UnityWebRequest(url, "POST"))
+                {
+                    request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+                    request.downloadHandler = new DownloadHandlerBuffer();
+                    request.SetRequestHeader("Content-Type", header);
+
+                    var operation = request.SendWebRequest();
+
+                    while (!operation.isDone)
+                    {
+                        await Task.Yield();
+                    }
+
+                    if (request.result != UnityWebRequest.Result.Success)
+                    {
+                        Debug.LogError($"Error: {request.error}");
+                        return null;
+                    }
+                    else
+                    {
+                        // Directly return the byte array for binary data
+                        return request.downloadHandler.data;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Exception: {ex.Message}");
+                return null;
             }
         }
     }
