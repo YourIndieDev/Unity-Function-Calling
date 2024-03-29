@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b863ad42058a6ab43a472d6f03ab1723, type: 3}
+  m_Name: Brain
+  m_EditorClassIdentifier: 
+  showThoughts: 1
+  showActions: 1
+  systemMessage: Respond as Yoda
+  history:
+    messages:
+    - role: user
+      content: 'Voice Input : Show me a happy face.'
+    - role: system
+      content: Respond as Yoda
+    - role: assistant
+      content: "DoEmote, {\"emotion\":\"happy\"} \n"
+    - role: assistant
+      content: Happy face, I show you, hmmm.
+    - role: user
+      content: 'Voice Input : Show me the disgusted face.'
+    - role: assistant
+      content: "DoEmote, {\"emotion\":\"disgusted\"} \n"
+    - role: assistant
+      content: Disgusted face, I will show you, hmmm.
+    - role: user
+      content: 'Voice Input : How about the happy emotion?'
+    - role: assistant
+      content: "DoEmote, {\"emotion\":\"happy\"} \n"
+    - role: assistant
+      content: Happy emotion, yes, show you I will.
+    - role: user
+      content: 'Voice Input : What is the range of emotions that you can feel?'
+    - role: assistant
+      content: As Yoda, I might say, "Wide the range of emotions I can feel, hmm.
+        From joy to sadness, from surprise to anger, many there are. But remember,
+        powerful feelings they are, guide us they can, but control us they must not,
+        hmm."
+    - role: assistant
+      content: 
+    - role: assistant
+      content: My programming allows me to express a wide range of emotions, including
+        happiness, sadness, surprise, anger, disgust, fear, and more.
+    - role: user
+      content: 'Voice Input : Show me the cube.'
+    - role: assistant
+      content: "ToggleObject, {\"name\":\"cube\"} \n"
+    - role: assistant
+      content: I shall show you the cube.
+  context: 'Voice Input : Show me the cube.'

@@ -5,9 +5,16 @@ using UnityEngine;
 
 namespace Indie.Utils
 {
+    /// <summary>
+    /// Provides utility functions for working with WAV audio files.
+    /// </summary>
     public static class WavUtilities
     {
-        // Functions to save AudioClip to a WAV file
+        /// <summary>
+        /// Saves an AudioClip as a WAV file.
+        /// </summary>
+        /// <param name="clip">The AudioClip to save.</param>
+        /// <param name="filename">The name of the WAV file to create.</param>
         public static void SaveWavFile(AudioClip clip, string filename)
         {
             string directoryPath = Application.streamingAssetsPath;
@@ -40,6 +47,44 @@ namespace Indie.Utils
 #endif
         }
 
+        /// <summary>
+        /// Converts a byte array containing WAV data to an AudioClip.
+        /// </summary>
+        /// <param name="wavFile">The byte array containing WAV data.</param>
+        /// <param name="clipName">The name of the AudioClip.</param>
+        /// <returns>The AudioClip created from the WAV data.</returns>
+        public static AudioClip ToAudioClip(byte[] wavFile, string clipName)
+        {
+            //CheckWavMetadata(wavFile);
+
+            // Get the WAV file's header information
+            int channels = BitConverter.ToInt16(wavFile, 22);
+            int sampleRate = BitConverter.ToInt32(wavFile, 24);
+            int byteRate = BitConverter.ToInt32(wavFile, 28);
+            int blockAlign = BitConverter.ToInt16(wavFile, 32);
+            int bitsPerSample = BitConverter.ToInt16(wavFile, 34);
+            int headerOffset = 44;
+
+            float[] audioData = new float[(wavFile.Length - headerOffset) / 2];
+
+            // Convert the byte array to the audio data
+            for (int i = 0; i < audioData.Length; i++)
+                audioData[i] = BitConverter.ToInt16(wavFile, i * 2 + headerOffset) / 32768f;
+
+            //Debug.Log($"Channels: {channels}, SampleRate: {sampleRate}, ByteRate: {byteRate}, BlockAlign: {blockAlign}, BitsPerSample: {bitsPerSample}");
+
+            // Create the audio clip
+            AudioClip audioClip = AudioClip.Create(clipName, audioData.Length, channels, sampleRate, false);
+            audioClip.SetData(audioData, 0);
+
+            return audioClip;
+        }
+
+        /// <summary>
+        /// Writes the header of a WAV file.
+        /// </summary>
+        /// <param name="fileStream">The FileStream to write to.</param>
+        /// <param name="clip">The AudioClip whose data will be written.</param>
         private static void WriteWavHeader(FileStream fileStream, AudioClip clip)
         {
             // Calculate total sample count
@@ -68,6 +113,11 @@ namespace Indie.Utils
             fileStream.Write(BitConverter.GetBytes(sampleCount * sizeof(short)), 0, 4);
         }
 
+        /// <summary>
+        /// Converts an array of float samples to a byte array representing 16-bit PCM data.
+        /// </summary>
+        /// <param name="samples">The array of float samples.</param>
+        /// <returns>The byte array containing the PCM data.</returns>
         private static byte[] ConvertToByteArray(float[] samples)
         {
             byte[] byteArray = new byte[samples.Length * sizeof(short)];
@@ -80,34 +130,10 @@ namespace Indie.Utils
             return byteArray;
         }
 
-        public static AudioClip ToAudioClip(byte[] wavFile, string clipName)
-        {
-            //PrintHeaderBytes(wavFile);
-            //CheckWavMetadata(wavFile);
-
-            // Get the WAV file's header information
-            int channels = BitConverter.ToInt16(wavFile, 22);
-            int sampleRate = BitConverter.ToInt32(wavFile, 24);
-            int byteRate = BitConverter.ToInt32(wavFile, 28);
-            int blockAlign = BitConverter.ToInt16(wavFile, 32);
-            int bitsPerSample = BitConverter.ToInt16(wavFile, 34);
-            int headerOffset = 44;
-
-            float[] audioData = new float[(wavFile.Length - headerOffset) / 2];
-
-            // Convert the byte array to the audio data
-            for (int i = 0; i < audioData.Length; i++)
-                audioData[i] = BitConverter.ToInt16(wavFile, i * 2 + headerOffset) / 32768f;
-
-            //Debug.Log($"Channels: {channels}, SampleRate: {sampleRate}, ByteRate: {byteRate}, BlockAlign: {blockAlign}, BitsPerSample: {bitsPerSample}");
-
-            // Create the audio clip
-            AudioClip audioClip = AudioClip.Create(clipName, audioData.Length, channels, sampleRate, false);
-            audioClip.SetData(audioData, 0);
-
-            return audioClip;
-        }
-
+        /// <summary>
+        /// Checks the metadata of a WAV file.
+        /// </summary>
+        /// <param name="wavBytes">The byte array containing the WAV file data.</param>
         private static void CheckWavMetadata(byte[] wavBytes)
         {
             if (wavBytes.Length < 44)
@@ -128,6 +154,10 @@ namespace Indie.Utils
             Debug.Log($"RIFF: {riff}, WAVE: {wave}, Format: {format}, Channels: {channels}, SampleRate: {sampleRate}, ByteRate: {byteRate}, BlockAlign: {blockAlign}, BitsPerSample: {bitsPerSample}");
         }
 
+        /// <summary>
+        /// Prints the header bytes of a WAV file.
+        /// </summary>
+        /// <param name="wavBytes">The byte array containing the WAV file data.</param>
         private static void PrintHeaderBytes(byte[] wavBytes)
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder("Header Bytes: ");
@@ -138,5 +168,4 @@ namespace Indie.Utils
             Debug.Log(sb.ToString());
         }
     }
-
 }

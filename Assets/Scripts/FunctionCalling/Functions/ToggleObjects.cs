@@ -27,6 +27,7 @@ namespace Indie
         }
 
         [Tool("ToggleObject", "Choose the desired object to be displayed")]
+        [Parameter("name", "the object to be toggled on or off", "cube", "cylinder", "sphere", "capsule")]
         public void Toggle(string name)
         {
             foreach (var obj in objects)

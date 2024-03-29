@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Indie.Utils;
 
+
 namespace Indie.Voice
 {
     [RequireComponent(typeof(AudioSource))]
@@ -18,10 +19,17 @@ namespace Indie.Voice
             nova,
             shimmer
         }
-        public Voice voice = Voice.alloy;
 
+        [Space(10)]
+        [Header("Voice")]
+        [SerializeField] private Voice voice = Voice.alloy;
+
+        [Space(10)]
+        [Header("Clip Name")]
         [SerializeField] private string filename = "responseClip";
-        [SerializeField] private AudioSource audioSource;
+
+
+        private AudioSource audioSource;
         private AudioClip responseClip;
 
 
@@ -30,13 +38,22 @@ namespace Indie.Voice
             audioSource = GetComponent<AudioSource>();
         }
 
+        /// <summary>
+        /// Plays the audio response.
+        /// </summary>
         public void PlayResponse()
         {
+            if (responseClip == null) return;
+
             // Play the response
             audioSource.clip = responseClip;
             audioSource.Play();
         }
 
+        /// <summary>
+        /// Converts the specified text content to speech and prepares it for playback.
+        /// </summary>
+        /// <param name="content">The text content to convert to speech.</param>
         public async Task TextToSpeech(string content)
         {
             var textToSpeechMessage = new TextToSpeechMessage

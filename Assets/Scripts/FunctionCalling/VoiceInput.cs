@@ -3,7 +3,6 @@ using Indie.OpenAI.API;
 using Indie.OpenAI.Models.Requests;
 using Indie.OpenAI.Models.Responses;
 using Indie.Utils;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -14,61 +13,71 @@ namespace Indie.Voice
     [RequireComponent(typeof(AudioSource))]
     public class VoiceInput : MonoBehaviour
     {
+        [Space(10)]
+        [Header("Debug")]
+        [SerializeField] private bool debug = false;
+
+        [Space(10)]
+        [Header("The name of the file")]
         public string filename = "recordedClip.wav";
-        public AudioSource audioSource;
 
         // Adjust this value as needed for your project
+        [Space(10)]
+        [Header("Recording Duration")]
         public float recordingDuration = 5f;
 
-        public AudioClip recordedClip;
 
-        public bool isRecording = false;
+        private AudioSource audioSource;
+        private AudioClip recordedClip;
+        [HideInInspector] public bool isRecording = false;
 
-        void Start()
+        private void Start()
         {
             audioSource = GetComponent<AudioSource>();
 
             // Check microphone availability and request permission
             if (Microphone.devices.Length == 0)
             {
-                Debug.LogError("No microphone detected!");
+                Log("No microphone detected!", true);
                 return;
             }
 
             // Request permission to use the microphone
             if (Application.HasUserAuthorization(UserAuthorization.Microphone) == false)
             {
-                Debug.Log("Requesting microphone permission...");
+                Log("Requesting microphone permission...");
                 Application.RequestUserAuthorization(UserAuthorization.Microphone);
             }
         }
 
-
+        /// <summary>
+        /// Gets a list of available microphone devices.
+        /// </summary>
+        /// <returns>A string containing the names of available microphone devices.</returns>
         public string GetMicrophoneDevices()
         {
             // Check microphone availability and request permission
             if (Microphone.devices.Length == 0)
-            {
                 return ("No microphone detected!");
-            }
 
             string devices = "";
+
             // Print out the available microphone devices
             devices = ("Available microphone devices : ");
             foreach (string device in Microphone.devices)
-            {
                 devices += (device + " \n");
-            }
 
             return devices;
         }
 
-        // Function to start recording
+        // <summary>
+        /// Starts recording audio from the default microphone.
+        /// </summary>
         public void StartRecording()
         {
             if (!isRecording)
             {
-                Debug.Log("Start recording...");
+                Log("Start recording...");
 
                 // Start recording with the default microphone for the specified duration
                 recordedClip = Microphone.Start(null, false, Mathf.CeilToInt(recordingDuration), 44100);
@@ -77,16 +86,19 @@ namespace Indie.Voice
             }
             else
             {
-                Debug.Log("Already recording.");
+                Log("Already recording.");
             }
         }
 
-        // Function to stop recording and return the recorded AudioClip
+        /// <summary>
+        /// Stops recording audio and saves the recorded AudioClip as a WAV file.
+        /// </summary>
+        /// <returns>The recorded AudioClip.</returns>
         public AudioClip StopRecording()
         {
             if (isRecording)
             {
-                Debug.Log("Stop recording.");
+                Log("Stop recording.");
 
                 // Stop recording and return the recorded AudioClip
                 Microphone.End(null);
@@ -98,11 +110,15 @@ namespace Indie.Voice
             }
             else
             {
-                Debug.Log("Not recording.");
+                Log("Not recording.");
                 return null;
             }
         }
 
+        /// <summary>
+        /// Converts the recorded audio to text using a speech-to-text service.
+        /// </summary>
+        /// <returns>The text transcription of the recorded audio.</returns>
         public async Task<string> SpeechToText()
         {
             if (!filename.IsNullOrEmpty())
@@ -116,5 +132,19 @@ namespace Indie.Voice
                 return "";
         }
 
+        /// <summary>
+        /// Logs messages to the Unity console.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        /// <param name="isError">Specifies whether the message is an error message.</param>
+        private void Log(string message, bool isError = false)
+        {
+            if (!debug) return;
+
+            if (!isError)
+                Debug.Log(message);
+            else
+                Debug.LogError(message);
+        }
     }
 }

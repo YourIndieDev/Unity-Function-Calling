@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 
-
 namespace Indie.OpenAI.Models.Responses
 {
     // Chat
@@ -261,6 +260,7 @@ namespace Indie.OpenAI.Models.Responses
         }
     }
 
+    // Assistant
     public class Assistant
     {
         public class Response
