@@ -15,7 +15,7 @@ The `Tool` attribute is used to define a tool, providing its name and descriptio
 ```csharp
 using Indie.Attributes;
 
-[Tool("ToolName", "Description of the tool.")]
+[Tool("MyMethod", "Description of the tool.")]
 public void MyMethod()
 {
     // Method implementation
@@ -31,7 +31,7 @@ using Indie.Attributes;
 
 public class MyClass
 {
-    [Tool("ToolName", "Description of the tool.")]
+    [Tool("MyMethod", "Description of the tool.")]
     [Parameter("myParameter", "Description of the parameter.")]
     public void MyMethod(int myParameter)
     {
@@ -45,7 +45,7 @@ using Indie.Attributes;
 
 public class MyClass
 {
-    [Tool("ToolName", "Description of the tool.")]
+    [Tool("MyMethod", "Description of the tool.")]
     [Parameter("param1", "Description of the parameter.")]
     [Parameter("param2", "Description of the parameter.", "option1", "option2", "option3")]
     public void MyMethod(int param1, string param2)
@@ -75,7 +75,8 @@ using Indie.Attributes;
 public class MyGameController : MonoBehaviour
 {
     [Tool("MovePlayer", "Move the player to a specified position.")]
-    public void MovePlayer([Parameter("Position", "Position to move the player to.")] Vector3 position)
+    [Parameter("position", "Position to move the player to.")] 
+    public void MovePlayer(Vector3 position)
     {
         // Method implementation
     }
