@@ -6,7 +6,7 @@ The Unity Function Calling Framework is a simple yet powerful tool that integrat
 
 ## How It Works
 
-The framework utilizes attributes `Tool` and `Parameter` to define tools and parameters for methods in your Unity scripts. These attributes provide essential information to the AI, enabling it to make informed decisions about which action to take and which method/function to call within the Unity game.
+The framework utilizes attributes `Tool` and `Parameter` to define tools and parameters for methods in your Unity scripts. These attributes provide essential information to the AI, enabling it to make informed decisions about which action to take and which method/function to call, and passing in the values of each parameter within the Unity game.
 
 ### Tool Attribute
 
