@@ -1,8 +1,8 @@
-# Unity OpenAI Tool Framework
+# Unity Function Calling Framework
 
 ## Introduction
 
-The Unity OpenAI Tool Framework is a simple yet powerful tool that integrates OpenAI into Unity games. It allows you to call functions within your game using AI decision-making, providing flexibility and adaptability to your game mechanics.
+The Unity Function Calling Framework is a simple yet powerful tool that integrates OpenAI into Unity games. It allows you to call functions within your game using AI decision-making, providing flexibility and adaptability to your game mechanics.
 
 ## How It Works
 
@@ -57,7 +57,7 @@ public class MyClass
 
 ### Getting Started
 
-To use the Unity OpenAI Tool Framework in your Unity project, follow these simple steps:
+To use the Unity Function Calling Framework in your Unity project, follow these simple steps:
 
 1.  **Download the Framework**: Download the framework files and add them to your Unity project.
     
