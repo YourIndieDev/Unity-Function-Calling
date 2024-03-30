@@ -74,6 +74,19 @@ using Indie.Attributes;
 
 public class MyGameController : MonoBehaviour
 {
+    public Brain brain;
+    
+    private void OnEnable()
+    {
+        brain?.RegisterScript(GetType(), this);
+    }
+    
+    private void OnDisable()
+    {
+        brain?.UnRegisterScript(GetType());
+    }
+
+
     [Tool("MovePlayer", "Move the player to a specified position.")]
     [Parameter("position", "Position to move the player to.")] 
     public void MovePlayer(Vector3 position)
