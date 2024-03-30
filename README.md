@@ -62,10 +62,8 @@ To use the Unity Function Calling Framework in your Unity project, follow these 
 1.  **Download the Framework**: Download the framework files and add them to your Unity project.
     
 2.  **Implement Attributes**: Add `Tool` and `Parameter` attributes to the methods in your scripts to define tools and parameters.
-    
-3.  **Integrate with OpenAI**: Connect your Unity project to OpenAI to enable AI decision-making.
-    
-4.  **Call Functions**: Let the AI make decisions based on defined tools and parameters, and call functions within your game accordingly.
+        
+3.  **Call Functions**: Let the AI make decisions based on defined tools and parameters, and call functions within your game accordingly.
 
 
 ```csharp
