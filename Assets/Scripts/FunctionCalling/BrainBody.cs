@@ -16,13 +16,16 @@ namespace Indie
 
         [Space(10)]
         [Header("Voice")]
-        [SerializeField] private VoiceInput voiceInput;
+        [SerializeField] public VoiceInput voiceInput;
         [SerializeField] private VoiceOutput voiceOutput;
 
         [Space(10)]
         [Header("Text")]
         [SerializeField] private TMP_InputField textInputField;
         [SerializeField] private TMP_Text textOutputField;
+
+
+        public bool awaitingResponse = false;
 
 
         // Regerister and Unregister this scripts's tools to the brain
@@ -52,9 +55,17 @@ namespace Indie
 
 
         // Get context from voice input
-        public async Task UnderstandSpeech()
+        public async Task<string> UnderstandSpeech()
         {
-            if (brain) brain.context += "Voice Input : " + await voiceInput?.SpeechToText();
+            awaitingResponse = true;
+
+            var textFromSpeech = await voiceInput?.SpeechToTextWithPath();
+
+            if (brain) brain.context += "Voice Input : " + textFromSpeech;
+
+            awaitingResponse = false;
+
+            return textFromSpeech;
         }
 
         // Get context from text input
@@ -67,27 +78,47 @@ namespace Indie
         // Get text response
         public async Task<string> TextResponse(string content = null, MessageType messageType = MessageType.user)
         {
+            awaitingResponse = true;
+
             if (content != null)
-                return await brain?.CallChatEndpoint(content, messageType);
+            {
+                var response = await brain?.CallChatEndpoint(content, messageType);
+
+                awaitingResponse = false;
+                return response;
+            }
             else
-                return await brain?.CallChatEndpoint(brain?.context, messageType);
+            {
+                var response = await brain?.CallChatEndpoint(brain?.context, messageType);
+
+                awaitingResponse = false;
+                return response;
+            }
+
+
         }
 
         // Get a voice response
         public async Task VoiceResponse(string content = null)
         {
+            awaitingResponse = true;
+
             if (content == null)
                 await voiceOutput?.TextToSpeech(await TextResponse());
             else
                 await voiceOutput?.TextToSpeech(content);
 
+            awaitingResponse = false;
             voiceOutput?.PlayResponse();
         }
 
         // Do function call
         public async Task<string> Act()
         {
-            return await brain?.CallFunctionEndpoint(brain?.context);
+            awaitingResponse = true;
+            var response = await brain?.CallFunctionEndpoint(brain?.context);
+            awaitingResponse = false;
+            return response;
         }
 
 
@@ -96,8 +127,12 @@ namespace Indie
         {
             if (!brain) return;
 
+            ForgetContext();
+
+            awaitingResponse = true;
+
             // Get the context from the voice input
-            await UnderstandSpeech();
+            var textFromSpeech = await UnderstandSpeech();
 
             // Get the context from the text input
             ReadText();
@@ -113,6 +148,8 @@ namespace Indie
 
             // Respond with voice
             await VoiceResponse(response);
+
+            awaitingResponse = false;
         }
 
 

@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using Indie.OpenAI.Brain;
 using static Indie.OpenAI.Tools.ToolCreator;
@@ -7,12 +6,10 @@ using System.Collections.Generic;
 using System;
 
 
-namespace OpenAiI
+namespace Indie.Demo
 {
     public class Emote : MonoBehaviour
     {
-        public TMP_InputField inputField;
-
         public Brain aiBrain;
 
         public List<GameObject> emoji = new List<GameObject>();

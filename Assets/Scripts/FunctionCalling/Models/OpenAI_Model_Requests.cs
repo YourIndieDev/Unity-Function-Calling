@@ -39,9 +39,14 @@ namespace Indie.OpenAI.Models.Requests
 
 
     // Speech to Text
-    public class SpeechToTextMessage
+    public class SpeechToTextMessagePath
     {
         public string audio_path { get; set; }
+    }
+
+    public class SpeechToTextMessageData
+    {
+        public byte[] audio_data { get; set; }
     }
 
 

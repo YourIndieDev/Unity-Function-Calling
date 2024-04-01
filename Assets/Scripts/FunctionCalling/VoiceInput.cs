@@ -3,7 +3,10 @@ using Indie.OpenAI.API;
 using Indie.OpenAI.Models.Requests;
 using Indie.OpenAI.Models.Responses;
 using Indie.Utils;
+using System;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -29,6 +32,9 @@ namespace Indie.Voice
 
         private AudioSource audioSource;
         private AudioClip recordedClip;
+        private byte[] audioData;
+
+
         [HideInInspector] public bool isRecording = false;
 
         private void Start()
@@ -103,7 +109,9 @@ namespace Indie.Voice
                 // Stop recording and return the recorded AudioClip
                 Microphone.End(null);
 
-                WavUtilities.SaveWavFile(recordedClip, filename);
+                var path = WavUtilities.SaveWavFile(recordedClip, filename);
+
+                audioData = File.ReadAllBytes(path);
 
                 isRecording = false;
                 return recordedClip;
@@ -119,17 +127,43 @@ namespace Indie.Voice
         /// Converts the recorded audio to text using a speech-to-text service.
         /// </summary>
         /// <returns>The text transcription of the recorded audio.</returns>
-        public async Task<string> SpeechToText()
+        public async Task<string> SpeechToTextWithPath()
         {
             if (!filename.IsNullOrEmpty())
             {
-                var speechtotextmessage = new SpeechToTextMessage { audio_path = Path.Combine(Application.streamingAssetsPath, filename) };
-                var speechToTextAsyncResponse = await FastAPICommunicator.CallEndpointPostAsync<SpeechToText.Response>(FastAPICommunicator.speechToTextUrl, speechtotextmessage);
+                var speechtotextmessage = new SpeechToTextMessagePath { audio_path = Path.Combine(Application.streamingAssetsPath, filename) };
+                var speechToTextAsyncResponse = await FastAPICommunicator.CallEndpointPostAsync<SpeechToText.Response>(FastAPICommunicator.speechToTextPathUrl, speechtotextmessage);
 
                 return speechToTextAsyncResponse.Text;
             }
             else
                 return "";
+        }
+
+        public async Task<string> SpeechToTextWithData()
+        {
+            string wavFilePath = Path.Combine(Application.streamingAssetsPath, filename);
+
+            if (File.Exists(wavFilePath))
+            {
+                // Read the contents of the .wav file
+                byte[] audioData = File.ReadAllBytes(wavFilePath);
+
+                var speechToTextAsyncResponse = await FastAPICommunicator.CallEndpointPostAsync<SpeechToText.Response>(FastAPICommunicator.speechToTextDataUrl, audioData, "audio/wav");
+
+                return speechToTextAsyncResponse.Text;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        private byte[] ConvertFloatArrayToByteArray(float[] floatArray)
+        {
+            byte[] byteArray = new byte[floatArray.Length * 4];
+            Buffer.BlockCopy(floatArray, 0, byteArray, 0, byteArray.Length);
+            return byteArray;
         }
 
         /// <summary>

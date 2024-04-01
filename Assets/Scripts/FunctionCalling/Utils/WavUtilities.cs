@@ -15,7 +15,7 @@ namespace Indie.Utils
         /// </summary>
         /// <param name="clip">The AudioClip to save.</param>
         /// <param name="filename">The name of the WAV file to create.</param>
-        public static void SaveWavFile(AudioClip clip, string filename)
+        public static string SaveWavFile(AudioClip clip, string filename)
         {
             string directoryPath = Application.streamingAssetsPath;
             string filePath = Path.Combine(directoryPath, filename);
@@ -45,6 +45,8 @@ namespace Indie.Utils
 #if UNITY_EDITOR
             UnityEditor.AssetDatabase.Refresh();
 #endif
+
+            return filePath;
         }
 
         /// <summary>

@@ -28,23 +28,29 @@ namespace Indie.OpenAI.API
     public static class FastAPICommunicator
     {
         // Chat URLS
-        public static string chatAsyncUrl = "http://localhost:8000/chat_async/";
-        public static string chatHistoryAsyncUrl = "http://localhost:8000/chat_history_async/";
-        public static string chatMessageAsyncUrl = "http://localhost:8000/chat_message_async/";
-        public static string functionsUrl = "http://localhost:8000/chat_functions/";
+        public const string baseLocalHostUrl = "http://localhost:8000/";
+        public const string baseUrl = "https://ai-python-server.onrender.com/";
 
-        public static string visionUrl = "http://localhost:8000/vision_async_url/";
-        public static string visionBytesUrl = "http://localhost:8000/vision_async_bytes/";
+        public static string chatAsyncUrl = $"{baseLocalHostUrl}chat_async/";
+        public static string chatHistoryAsyncUrl = $"{baseLocalHostUrl}chat_history_async/";
+        public static string chatMessageAsyncUrl = $"{baseLocalHostUrl}chat_message_async/";
+        public static string functionsUrl = $"{baseLocalHostUrl}chat_functions/";
 
-        public static string imageAsyncsUrl = "http://localhost:8000/image_async/";
+        public static string visionUrl = $"{baseLocalHostUrl}vision_async_url/";
+        public static string visionBytesUrl = $"{baseLocalHostUrl}vision_async_bytes/";
 
-        public static string speechToTextTimeStampUrl = "http://localhost:8000/speech_to_text_timestamp_async/";
-        public static string speechToTextUrl = "http://localhost:8000/speech_to_text_async/";
-        public static string textToSpeechUrl = "http://localhost:8000/text_to_speech_async/";
+        public static string imageAsyncsUrl = $"{baseLocalHostUrl}image_async/";
 
-        public static string moderationsAsyncUrl = "http://localhost:8000/moderations_async/";
+        public static string speechToTextTimePathStampUrl = $"{baseLocalHostUrl}speech_to_text_path_timestamp_async/";
+        public static string speechToTextPathUrl = $"{baseLocalHostUrl}speech_to_text_path_async/";
+        public static string speechToTextDataUrl = $"{baseLocalHostUrl}speech_to_text_data_async/";
 
-        public static string assistantUrl = "http://localhost:8000/assistant/";
+
+        public static string textToSpeechUrl = $"{baseLocalHostUrl}text_to_speech_async/";
+
+        public static string moderationsAsyncUrl = $"{baseLocalHostUrl}moderations_async/";
+
+        public static string assistantUrl = $"{baseLocalHostUrl}assistant/";
 
 
         // Examples of calling the API
