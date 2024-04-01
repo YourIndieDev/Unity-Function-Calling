@@ -80,9 +80,9 @@ namespace Indie.Demo
 
 
 
-        [Tool("GetTargetObject", "A function that allows an the Fetch AI to move towards a desired object. Use this method to get, fetch, retreive an object.")]
-        [Parameter("targetObj", "The name of the object that the Ai will get, retrieve, fetch.", "cube", "sphere", "cylinder", "capsule")]
-        public void GetTargetObject(string targetObj)
+        [Tool("SetTargetObject", "A function that allows an the Fetch AI to move towards a desired object")]
+        [Parameter("targetObj", "The name of the object that the Ai will move towards.", "cube", "sphere", "cylinder", "capsule")]
+        public void SetTargetObject(string targetObj)
         {
             var target = GameObject.FindGameObjectWithTag(targetObj);
 
