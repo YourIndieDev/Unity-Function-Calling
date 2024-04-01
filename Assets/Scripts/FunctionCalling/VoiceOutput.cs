@@ -29,13 +29,13 @@ namespace Indie.Voice
         [SerializeField] private string filename = "responseClip";
 
 
-        private AudioSource audioSource;
+        [SerializeField] private AudioSource audioSource;
         private AudioClip responseClip;
 
 
         private void Start()
         {
-            audioSource = GetComponent<AudioSource>();
+            if (!audioSource) audioSource = GetComponent<AudioSource>();
         }
 
         /// <summary>

@@ -1,8 +1,7 @@
 using Indie.Attributes;
 using Indie.OpenAI.Brain;
+using System;
 using UnityEngine;
-using UnityEngine.Playables;
-
 
 namespace Indie.Demo
 {
@@ -23,6 +22,8 @@ namespace Indie.Demo
 
         public bool isPickedUp = false;
 
+        public event Action OnPickUp;
+        public event Action OnRelease;
 
         private void OnEnable()
         {
@@ -126,6 +127,8 @@ namespace Indie.Demo
             obj.GetComponent<Rigidbody>().isKinematic = true;
 
             isPickedUp = true;
+
+            OnPickUp?.Invoke();
         }
 
         public void Release()
@@ -136,6 +139,8 @@ namespace Indie.Demo
             targetObject = null;
 
             isPickedUp = false;
+
+            OnRelease?.Invoke();
         }
     }
 }

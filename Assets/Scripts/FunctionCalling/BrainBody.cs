@@ -4,6 +4,7 @@ using Indie.Attributes;
 using Indie.Voice;
 using TMPro;
 using System.Threading.Tasks;
+using System;
 
 
 namespace Indie
@@ -26,7 +27,7 @@ namespace Indie
 
 
         public bool awaitingResponse = false;
-
+        public event Action OnThink;
 
         // Regerister and Unregister this scripts's tools to the brain
         private void OnEnable()
@@ -130,6 +131,7 @@ namespace Indie
             ForgetContext();
 
             awaitingResponse = true;
+            OnThink?.Invoke();
 
             // Get the context from the voice input
             var textFromSpeech = await UnderstandSpeech();
