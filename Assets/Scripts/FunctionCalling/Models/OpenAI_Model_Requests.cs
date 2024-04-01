@@ -5,12 +5,14 @@ using static Indie.OpenAI.Tools.ToolCreator;
 namespace Indie.OpenAI.Models.Requests
 {
     // Chat
+    [System.Serializable]
     public class ChatMessage
     {
         public string role;
         public string content;
     }
 
+    [System.Serializable]
     public class ChatHistory
     {
         public List<ChatMessage> messages = new List<ChatMessage>();

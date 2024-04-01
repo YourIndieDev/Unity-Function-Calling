@@ -27,8 +27,8 @@ namespace Indie.Demo
 
         // Function to call
         [Tool("DoEmote", "Allow a character to show emotions.")]
-        [Parameter("emotion", "The emotion to feel", "Happy", "Sad", "Anger", "Suprised", "Anxiety", "Disgust", "Fear", "Gratitude", "Love")]
-        public void DoEmote(string emotion)
+        [Parameter("emotion", "The emotion to feel", "happy", "sad", "anger", "suprised", "anxiety", "disgust", "fear", "gratitude", "love")]
+        public void DoEmote(string emotion, bool aBoolean)
         {
             foreach (var obj in emoji)
             {

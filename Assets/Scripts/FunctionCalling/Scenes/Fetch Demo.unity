@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 25047791}
   - component: {fileID: 25047790}
   m_Layer: 0
-  m_Name: Suprised
+  m_Name: suprised
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -364,7 +364,8 @@ AudioSource:
   m_GameObject: {fileID: 94445211}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -8926594523027118702, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.75
@@ -616,7 +617,8 @@ AudioSource:
   m_GameObject: {fileID: 137960483}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -8926594523027118702, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.75
@@ -935,7 +937,8 @@ AudioSource:
   m_GameObject: {fileID: 148374091}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 3568474116130382007, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.3
@@ -1210,7 +1213,7 @@ AudioSource:
   m_GameObject: {fileID: 253940229}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
+  OutputAudioMixerGroup: {fileID: 4052574236069956168, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
     type: 2}
   m_audioClip: {fileID: 8300000, guid: 4a4f5212593303f489b2ee52c0b162f8, type: 3}
   m_PlayOnAwake: 1
@@ -1402,7 +1405,7 @@ GameObject:
   - component: {fileID: 300536286}
   - component: {fileID: 300536285}
   m_Layer: 0
-  m_Name: Anger
+  m_Name: anger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1628,7 +1631,8 @@ AudioSource:
   m_GameObject: {fileID: 372427944}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -8926594523027118702, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.75
@@ -1756,7 +1760,7 @@ AudioSource:
   m_GameObject: {fileID: 375754286}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
+  OutputAudioMixerGroup: {fileID: 3568474116130382007, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
     type: 2}
   m_audioClip: {fileID: 8300000, guid: b69032ee3ae463c409aa1e9a1738735a, type: 3}
   m_PlayOnAwake: 1
@@ -1966,7 +1970,7 @@ GameObject:
   - component: {fileID: 446014309}
   - component: {fileID: 446014308}
   m_Layer: 0
-  m_Name: Sad
+  m_Name: sad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2041,7 +2045,7 @@ GameObject:
   - component: {fileID: 462712304}
   - component: {fileID: 462712303}
   m_Layer: 0
-  m_Name: Love
+  m_Name: love
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2506,7 +2510,7 @@ GameObject:
   - component: {fileID: 794709986}
   - component: {fileID: 794709985}
   m_Layer: 0
-  m_Name: Gratitude
+  m_Name: gratitude
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2910,7 +2914,7 @@ AudioSource:
   m_GameObject: {fileID: 1222781606}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
+  OutputAudioMixerGroup: {fileID: -8926594523027118702, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
     type: 2}
   m_audioClip: {fileID: 8300000, guid: 38c602eef6d589646ac7508794c99f62, type: 3}
   m_PlayOnAwake: 0
@@ -3040,7 +3044,7 @@ AudioSource:
   m_GameObject: {fileID: 1278699036}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
+  OutputAudioMixerGroup: {fileID: -8926594523027118702, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
@@ -3374,7 +3378,8 @@ AudioSource:
   m_GameObject: {fileID: 1303031882}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -6130213885833375418, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
+    type: 2}
   m_audioClip: {fileID: 1887661803}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -3421,7 +3426,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.5
+      value: 0.1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -3666,7 +3671,7 @@ GameObject:
   - component: {fileID: 1552133655}
   - component: {fileID: 1552133654}
   m_Layer: 0
-  m_Name: Anxiety
+  m_Name: anxiety
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3741,7 +3746,7 @@ GameObject:
   - component: {fileID: 1690324071}
   - component: {fileID: 1690324070}
   m_Layer: 0
-  m_Name: Disgust
+  m_Name: disgust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3873,7 +3878,7 @@ GameObject:
   - component: {fileID: 1820258771}
   - component: {fileID: 1820258770}
   m_Layer: 0
-  m_Name: Fear
+  m_Name: fear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4230,7 +4235,8 @@ AudioSource:
   m_GameObject: {fileID: 1991391182}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -8926594523027118702, guid: 5034ec983d8e6c6489cd0ed20a3adcbc,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.75
@@ -4465,7 +4471,7 @@ GameObject:
   - component: {fileID: 2094038843}
   - component: {fileID: 2094038842}
   m_Layer: 0
-  m_Name: Happy
+  m_Name: happy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
