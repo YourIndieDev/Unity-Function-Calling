@@ -7,7 +7,6 @@ namespace UnityCopilot.Models
     {
         public string role;
         public string content;
-        public string name;
     }
 
     [System.Serializable]

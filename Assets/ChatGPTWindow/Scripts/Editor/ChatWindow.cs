@@ -8,9 +8,12 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
-using UnityCopilot.Models;
 using UnityCopilot.Log;
 using UnityCopilot.Utils;
+using Indie.OpenAI.Models.Requests;
+using Indie.OpenAI.API;
+using Indie.OpenAI.Models.Responses;
+using static PlasticPipe.PlasticProtocol.Messages.Serialization.ItemHandlerMessagesSerialization;
 
 namespace UnityCopilot.Editor
 {
@@ -33,10 +36,7 @@ namespace UnityCopilot.Editor
         public enum Assistant
         {
             Chat, 
-            Programmer, 
-            StoryDesigner, 
-            CharacterDesigner, 
-            EnvironmentDesigner
+            Assistant,
         }
         private Assistant selectedAssistant = Assistant.Chat;
 
@@ -146,13 +146,13 @@ namespace UnityCopilot.Editor
             foreach (ChatMessage message in chatLog)
             {
                 // Align Name to the left or right depending on Name
-                if (message?.role == "User")
+                if (message?.role == "user")
                 {
                     GUIStyle userlabelStyle = new GUIStyle(GUI.skin.label)
                     {
                         alignment = TextAnchor.MiddleLeft
                     };
-                    GUILayout.Label(message?.name, userlabelStyle);
+                    GUILayout.Label(message?.role, userlabelStyle);
                 }
                 else
                 {
@@ -160,7 +160,7 @@ namespace UnityCopilot.Editor
                     {
                         alignment = TextAnchor.MiddleRight
                     };
-                    GUILayout.Label(message?.name, assistantlabelStyle);
+                    GUILayout.Label(message?.role, assistantlabelStyle);
                 }
 
                 GUILayout.BeginVertical("box");
@@ -209,6 +209,7 @@ namespace UnityCopilot.Editor
                     input = string.Empty;
                     SetUpMessage(inputCopy);
                 }
+
             //GUI.enabled = true;
             GUILayout.EndHorizontal();
 
@@ -311,25 +312,8 @@ namespace UnityCopilot.Editor
 
             GUILayout.Space(10);
 
-            GUILayout.Label("Unity Programmer API Endpoint URL:");
-            GUILayout.TextField(APIEndpoints.ProgrammerUrl);
-
-            GUILayout.Space(10);
-
-            GUILayout.Label("Story Designer API Endpoint URL:");
-            GUILayout.TextField(APIEndpoints.StoryDesignerUrl);
-
-            GUILayout.Space(10);
-
-            GUILayout.Label("Character Designer API Endpoint URL:");
-            GUILayout.TextField(APIEndpoints.CharacterDesignerUrl);
-
-            GUILayout.Space(10);
-
-            GUILayout.Label("Environment Designer API Endpoint URL:");
-            GUILayout.TextField(APIEndpoints.EnvironmentDesignerUrl);
-
-            GUILayout.Space(10);
+            GUILayout.Label("Unity Assistant API Endpoint URL:");
+            GUILayout.TextField(APIEndpoints.AssistantURL);
 
             GUILayout.EndVertical();
         }
@@ -478,7 +462,8 @@ namespace UnityCopilot.Editor
             // Update the scroll position to be at the bottom
             scrollPosition.y = float.MaxValue;
         }
-        private void RemoveMessage()
+
+        private void RemoveMessage()
         {
             // TODO
         }
@@ -501,105 +486,115 @@ namespace UnityCopilot.Editor
                 case Assistant.Chat:
                     url = APIEndpoints.ChatUrl;
                     break;
-                case Assistant.Programmer:
-                    url = APIEndpoints.ProgrammerUrl;
-                    break;
-                case Assistant.StoryDesigner:
-                    url = APIEndpoints.StoryDesignerUrl;
-                    break;
-                case Assistant.CharacterDesigner:
-                    url = APIEndpoints.CharacterDesignerUrl;
-                    break;
-                case Assistant.EnvironmentDesigner:
-                    url = APIEndpoints.EnvironmentDesignerUrl;
+                case Assistant.Assistant:
+                    url = APIEndpoints.AssistantURL;
                     break;
                 default:
                     if (debug) Debug.LogError("Invalid endpoint selected");
                     return;
             }
 
-
-            // Create a new chat message with the user's input
-            var message = new ChatMessage
+            if (selectedAssistant == Assistant.Chat)
             {
-                role = "User",
-                content = content,
-                name = "You"
-            };
-            AddMessage(message);
-
-
-            // Create a ChatInputModel
-            var inputModel = new ChatInputModel
-            {
-                userMessage = content,
-                chatHistory = new List<ChatMessage>(chatLog)
-            };
-
-            // If debug mode is enabled and there are error messages, add the latest error message to the chat history
-            if (applyLogging && log.errorLog.Count > 0)
-            {
-                var latestError = log.GetLatestError();
-
-                var errorMessage = new ChatMessage
+                // Create a new chat message with the user's input
+                var message = new ChatMessage
                 {
-                    role = "error",
-                    content = latestError,
-                    name = "Error"
+                    role = "user",
+                    content = content,
                 };
-                inputModel.chatHistory.Add(errorMessage);
+                AddMessage(message);
 
-                // Extract the script file path from the error message
-                string scriptPath = FileUtils.ExtractScriptPathFromError(latestError);
-                if (!string.IsNullOrEmpty(scriptPath))
+                // Create a ChatHistory
+                var history = new ChatHistory
                 {
-                    // Read the script file content and add it to the chat history
-                    string scriptContent = FileUtils.ReadScriptContentFromPath(scriptPath);
-                    if (!string.IsNullOrEmpty(scriptContent))
+                    messages = new List<ChatMessage>(chatLog)
+                };
+
+                // If debug mode is enabled and there are error messages, add the latest error message to the chat history
+                if (applyLogging && log.errorLog.Count > 0)
+                {
+                    var latestError = log.GetLatestError();
+
+                    var errorMessage = new ChatMessage
                     {
-                        var scriptContentMessage = new ChatMessage
+                        role = "user",
+                        content = latestError,
+                    };
+                    history.messages.Add(errorMessage);
+
+                    // Extract the script file path from the error message
+                    string scriptPath = FileUtils.ExtractScriptPathFromError(latestError);
+                    if (!string.IsNullOrEmpty(scriptPath))
+                    {
+                        // Read the script file content and add it to the chat history
+                        string scriptContent = FileUtils.ReadScriptContentFromPath(scriptPath);
+                        if (!string.IsNullOrEmpty(scriptContent))
                         {
-                            role = "scriptContent",
-                            content = scriptContent,
-                            name = "Script"
-                        };
-                        inputModel.chatHistory.Add(scriptContentMessage);
+                            var scriptContentMessage = new ChatMessage
+                            {
+                                role = "user",
+                                content = scriptContent,
+                            };
+                            history.messages.Add(scriptContentMessage);
+                        }
                     }
                 }
-            }
 
-            // If there are files loaded
-            if (dropbag.droppedFiles != null)
-            {
-                foreach (var file in dropbag.droppedFiles)
+                // If there are files loaded
+                if (dropbag.droppedFiles != null)
                 {
-                    string fileContent = FileUtils.ReadCSharpFile(file);
-
-                    ChatMessage chatMessage = new ChatMessage()
+                    foreach (var file in dropbag.droppedFiles)
                     {
-                        role = "context",
-                        content = fileContent,
-                        name = file.name
-                    };
+                        string fileContent = FileUtils.ReadCSharpFile(file);
 
-                    inputModel.chatHistory.Add(chatMessage);
-                }             
+                        ChatMessage chatMessage = new ChatMessage()
+                        {
+                            role = "user",
+                            content = fileContent,
+                        };
+
+                        history.messages.Add(chatMessage);
+                    }
+                }
+
+                // Call the Chat API
+                var response = await FastAPICommunicator.CallEndpointPostAsync<ChatCompletion.Response>(url, history);
+
+                var responseMessage = new ChatMessage
+                {
+                    role = response.Choices[0].Message.Role,
+                    content = response.Choices[0].Message.Content,
+                };
+
+                if (response != null)
+                    AddMessage(responseMessage);
             }
-
-            // Converts the input model into json
-            string jsonData = JsonUtility.ToJson(inputModel);
-
-            string response = await APIRequest.SendAPIRequest(url, jsonData);
-
-            var responseMessage = new ChatMessage
+            else if (selectedAssistant == Assistant.Assistant)
             {
-                role = "Assistant",
-                content = response,
-                name = "Assistant"
-            };
+                var message = new AssistantMessage
+                {
+                    input = content,
+                    assistant_id = "asst_S7cNXIUsMN1f3WDL39zy7eFF"
+                };
 
-            if (response != null)
-                AddMessage(responseMessage);
+                AddMessage(new ChatMessage
+                {
+                    role = "user",
+                    content = content
+                });
+
+                // Call the Chat API
+                var response = await FastAPICommunicator.CallEndpointPostAsync<List<Indie.OpenAI.Models.Responses.Assistant.Response>>(url, message);
+
+                var responseMessage = new ChatMessage
+                {
+                    role = response[0].Role,
+                    content = response[0].Content[0].Text.Value
+                };
+
+                if (response != null)
+                    AddMessage(responseMessage);
+            }
         }
     }
 }
