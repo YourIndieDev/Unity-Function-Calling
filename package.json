@@ -1,0 +1,11 @@
+{
+  "name": "com.yourindiedev.unity-function-calling",
+  "version": "1.0.0",
+  "displayName": "Unity Function Calling",
+  "description": "A package for function calling in Unity",
+  "unity": "2020.3",
+  "author": {
+    "name": "Your Indie Dev",
+    "url": "https://github.com/YourIndieDev"
+  }
+}
